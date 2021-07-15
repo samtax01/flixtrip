@@ -1,4 +1,4 @@
-package com.flixbus.flixtrip.model
+package com.flixbus.flixtrip.models
 
 data class Reservation(
         val id: Int,

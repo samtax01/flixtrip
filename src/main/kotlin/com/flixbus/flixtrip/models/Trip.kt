@@ -1,4 +1,4 @@
-package com.flixbus.flixtrip.model
+package com.flixbus.flixtrip.models
 
 import java.util.*
 
