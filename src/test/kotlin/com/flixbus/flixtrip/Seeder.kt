@@ -2,6 +2,7 @@ package com.flixbus.flixtrip
 
 import com.flixbus.flixtrip.models.requests.ReservationRequest
 import com.flixbus.flixtrip.models.requests.TripRequest
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 class Seeder {
@@ -12,7 +13,7 @@ class Seeder {
             return TripRequest(
                 fromCity = "Berlin",
                 toCity = "Hamburg",
-                startAt = Date(),
+                startAt = Date.from(Date().toInstant().plus(5, ChronoUnit.DAYS)),
                 totalSpot = totalSpot,
                 availableSpot = totalSpot,
             );

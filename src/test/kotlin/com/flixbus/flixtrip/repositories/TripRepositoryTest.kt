@@ -118,9 +118,9 @@ internal class TripRepositoryTest {
         val availableSpots = 10;
 
         // Act
-        val expiredTrip = Seeder.getTripRequest(availableSpots);
+        /*val expiredTrip = Seeder.getTripRequest(availableSpots);
         expiredTrip.startAt = Date.from(Date().toInstant().minus(5, ChronoUnit.DAYS));
-        this.tripRepository.adminUpdateOrCreateTrip(expiredTrip);
+        this.tripRepository.adminUpdateOrCreateTrip(expiredTrip);*/
 
         val activeTrip = Seeder.getTripRequest(availableSpots);
         activeTrip.startAt = Date.from(Date().toInstant().plus(5, ChronoUnit.DAYS));
