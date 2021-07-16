@@ -18,16 +18,15 @@ class ReservationController(val reservationRepository: ReservationRepository) {
         ApiResponse.create(reservationRepository.create(request), true, "Created successfully", HttpStatus.CREATED)
 
 
-    // Get reservation
-    @GetMapping("{id}")
-    fun getReservation(@PathVariable id:Long): ResponseEntity<ApiResponse> =
-            ApiResponse.create(reservationRepository.get(id), true, "Success", HttpStatus.OK)
-
-
     // Update reservation
     @PatchMapping(path = ["{id}"])
     fun updateReservedSpot(@PathVariable id:Long, @RequestBody request: ReservationRequest): ResponseEntity<ApiResponse> =
         ApiResponse.create(reservationRepository.update(request, id), true, "Updated successfully", HttpStatus.ACCEPTED)
+
+    // Get reservation
+    @GetMapping("{id}")
+    fun getReservation(@PathVariable id:Long): ResponseEntity<ApiResponse> =
+        ApiResponse.create(reservationRepository.get(id), true, "Success", HttpStatus.OK)
 
 
     // Delete reservation
