@@ -33,6 +33,8 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
     fun create(request: ReservationRequest): Reservation {
         // Get trip
         val trip = tripTable.findById(request.tripId)
+        if(!trip.isPresent)
+            throw ApiException("Trip is not available", HttpStatus.NOT_FOUND)
 
         // Validate request
         validateRequest(request)
@@ -135,10 +137,9 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
 
 
     /**
-     * Validate request and confirm spot availability
+     * Validate request
      */
     private fun validateRequest(request: ReservationRequest){
-        // Validate Bad Request
         var errorMessage = "";
         if(ObjectUtils.isEmpty(request))
             errorMessage = "Request cannot be empty"

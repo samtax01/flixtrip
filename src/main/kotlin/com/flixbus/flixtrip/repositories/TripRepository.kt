@@ -10,13 +10,12 @@ import com.flixbus.flixtrip.repositories.interfaces.IReservationRepository
 import com.flixbus.flixtrip.repositories.interfaces.ITripRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
+import org.springframework.util.ObjectUtils
 import java.util.*
 import javax.persistence.TypedQuery
 
 @Repository
 class TripRepository(val reservationTable: IReservationRepository, val tripTable: ITripRepository) {
-
-
 
 
     /**
@@ -51,6 +50,9 @@ class TripRepository(val reservationTable: IReservationRepository, val tripTable
      *  Admin: Create or Update Trip
      */
     fun adminUpdateOrCreateTrip(tripRequest: TripRequest, id: Long = 0): Trip {
+        // validate request
+        validateRequest(tripRequest);
+
         // validate trip exists for update.
         if(id>0 && !tripTable.existsById(id))
             throw ApiException("Trip is not available", HttpStatus.NOT_FOUND)
@@ -76,4 +78,16 @@ class TripRepository(val reservationTable: IReservationRepository, val tripTable
         tripTable.delete(adminGetTrip(id))
     }
 
+    /**
+     * Validate request
+     */
+    private fun validateRequest(request: TripRequest){
+        var errorMessage = "";
+        if(ObjectUtils.isEmpty(request))
+            errorMessage = "Request cannot be empty"
+        else if(request.startAt.time < Date().time)
+            errorMessage = "Trip start date must be a future date"
+        if(errorMessage.isNotEmpty())
+            throw ApiException(errorMessage, HttpStatus.UNPROCESSABLE_ENTITY)
+    }
 }
