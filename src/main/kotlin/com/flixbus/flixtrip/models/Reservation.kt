@@ -1,9 +1,16 @@
 package com.flixbus.flixtrip.models
+import java.util.*
+import javax.persistence.*
 
-data class Reservation (
-        val id: Int,
-        val tripId: Int,
-        val totalSpot: Int,
-        val customerName: String
+@Entity
+@Table(name = "reservations")
+data class Reservation(
+        @Id @GeneratedValue(strategy = GenerationType.AUTO)
+        val id: Long = 0,
+
+        val tripId: Long = 0,
+        val totalSpot: Int = 0,
+        val customerName: String = "",
+        val createdAt: Date? = null
     )
 
