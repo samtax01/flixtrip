@@ -73,41 +73,4 @@ internal class TripControllerIntegrationTest(@Autowired val restTemplate: TestRe
     }
 
 
-
-    @Test
-    fun `can update trip`() {
-        // Arrange
-        val tripUrl = "/api/admin/trips";
-
-        // Act
-        val tripResponse = restTemplate.postForEntity<ApiResponse>(tripUrl, Seeder.getTripRequest())
-        assertNotNull(tripResponse)
-        val tripApiResponse = tripResponse.body
-        // Convert value to Trip
-        val trip: Trip = objectMapper.readValue(objectMapper.writeValueAsString(tripApiResponse?.data));
-
-        // Assert
-        assertEquals(HttpStatus.CREATED, tripResponse.statusCode)
-        assertEquals(true, tripApiResponse?.status)
-        assertNotNull(trip)
-
-
-        //////////////// Update Trip
-
-        // Arrange
-        val tripUpdateUrl = "/api/admin/trips/${trip.id}";
-
-        // Act
-        val tripUpdateResponse = restTemplate.patchForObject<ApiResponse>(tripUpdateUrl, Seeder.getTripRequest())
-        assertNotNull(tripUpdateResponse)
-        val tripUpdateApiResponse = tripUpdateResponse?.copy();
-        // Convert value to Trip
-        val tripUpdate: Trip = objectMapper.readValue(objectMapper.writeValueAsString(tripUpdateApiResponse?.data));
-
-        // Assert
-        assertEquals(true, tripUpdateApiResponse?.status)
-        assertNotNull(tripUpdate)
-    }
-
-
 }
