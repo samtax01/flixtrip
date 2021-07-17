@@ -2,6 +2,7 @@ package com.flixbus.flixtrip.repositories
 
 import com.flixbus.flixtrip.Seeder
 import com.flixbus.flixtrip.helpers.ApiException
+import com.flixbus.flixtrip.helpers.ApiResponse
 import com.flixbus.flixtrip.repositories.interfaces.IReservationRepository
 import com.flixbus.flixtrip.repositories.interfaces.ITripRepository
 import org.junit.jupiter.api.Assertions.*

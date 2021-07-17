@@ -8,11 +8,15 @@ import com.flixbus.flixtrip.models.requests.ReservationRequest
 import com.flixbus.flixtrip.models.requests.TripRequest
 import com.flixbus.flixtrip.repositories.interfaces.IReservationRepository
 import com.flixbus.flixtrip.repositories.interfaces.ITripRepository
+import org.hibernate.StaleObjectStateException
 import org.springframework.http.HttpStatus
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Repository
 import org.springframework.util.ObjectUtils
 import java.util.*
+import javax.persistence.OptimisticLockException
 import javax.persistence.TypedQuery
+import javax.transaction.Transactional
 
 @Repository
 class TripRepository(val reservationTable: IReservationRepository, val tripTable: ITripRepository) {
@@ -57,17 +61,17 @@ class TripRepository(val reservationTable: IReservationRepository, val tripTable
         if(id>0 && !tripTable.existsById(id))
             throw ApiException("Trip is not available", HttpStatus.NOT_FOUND)
 
-        // Save
-        return tripTable.save(Trip(
-                id,
-                fromCity = tripRequest.fromCity,
-                toCity = tripRequest.toCity,
-                startAt = tripRequest.startAt,
-                totalSpot = tripRequest.totalSpot,
-                availableSpot = tripRequest.availableSpot,
-                createdAt = Date()
-            )
+        val trip: Trip = (if(id>0) tripTable.findById(id).get() else Trip(createdAt = Date())).copy(
+            id = id,
+            fromCity = tripRequest.fromCity,
+            toCity = tripRequest.toCity,
+            startAt = tripRequest.startAt,
+            totalSpot = tripRequest.availableSpot,
+            availableSpot = tripRequest.availableSpot,
         )
+
+        // Save
+        return tripTable.save(trip)
     }
 
 

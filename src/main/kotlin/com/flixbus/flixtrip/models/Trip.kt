@@ -21,5 +21,8 @@ data class Trip(
                 fetch = FetchType.LAZY,
                 cascade = [CascadeType.ALL])
         val reservations: List<Reservation> = emptyList(),
+
+        @Version
+        private val version: Long = 0,
     )
 

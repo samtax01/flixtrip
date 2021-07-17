@@ -8,10 +8,14 @@ import com.flixbus.flixtrip.models.Trip
 import com.flixbus.flixtrip.models.requests.ReservationRequest
 import com.flixbus.flixtrip.repositories.interfaces.IReservationRepository
 import com.flixbus.flixtrip.repositories.interfaces.ITripRepository
+import org.hibernate.StaleObjectStateException
 import org.springframework.http.HttpStatus
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Repository
 import org.springframework.util.ObjectUtils
 import java.util.*
+import javax.persistence.OptimisticLockException
+import javax.transaction.Transactional
 
 @Repository
 class ReservationRepository(val reservationTable: IReservationRepository, val tripTable: ITripRepository) {
@@ -30,11 +34,14 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
     /**
      *  Create reservation if selected spot is greater than 0 and space is available
      */
+    @Transactional
+    @Retryable(
+        value = [OptimisticLockException::class, StaleObjectStateException::class], // If an OptimisticLockException exception rises in this method, It will be called again in a new transaction to repeat the operation.
+        maxAttempts = 5
+    )
     fun create(request: ReservationRequest): Reservation {
         // Get trip
-        val trip = tripTable.findById(request.tripId)
-        if(!trip.isPresent)
-            throw ApiException("Trip is not available", HttpStatus.NOT_FOUND)
+        val trip = getAndValidateTrip(request.tripId)
 
         // Validate request
         validateRequest(request)
@@ -51,9 +58,14 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
     /**
      *  Update reservation
      */
+    @Transactional
+    @Retryable(
+        value = [OptimisticLockException::class, StaleObjectStateException::class],
+        maxAttempts = 5
+    )
     fun update(newReservation: ReservationRequest, id: Long): Reservation {
         // Get trip
-        val trip = tripTable.findById(newReservation.tripId)
+        val trip = getAndValidateTrip(newReservation.tripId)
 
         // Validate request
         validateRequest(newReservation)
@@ -111,14 +123,18 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
         if(!trip.isPresent)
             throw ApiException("Trip is not available", HttpStatus.NOT_FOUND)
 
-        // Add to spot
-        if(tripAvailabilityAction == TripAvailability.Add)
-            tripTable.save(trip.get().copy(availableSpot = (trip.get().availableSpot + spot)));
 
-        // Remove from spot
-        else if(tripAvailabilityAction == TripAvailability.Remove)
-            tripTable.save(trip.get().copy(availableSpot = (trip.get().availableSpot - spot)));
+        when (tripAvailabilityAction){
+            // Add to spot
+            TripAvailability.Add ->
+                tripTable.save(trip.get().copy(availableSpot = (trip.get().availableSpot + spot)))
+
+            // Remove from spot
+            TripAvailability.Remove ->
+                tripTable.save(trip.get().copy(availableSpot = (trip.get().availableSpot - spot)))
+        }
     }
+
 
     /**
      *  Save Request
@@ -149,6 +165,17 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
             throw ApiException(errorMessage, HttpStatus.UNPROCESSABLE_ENTITY)
     }
 
+
+
+    /**
+     * Get Trip as Optional
+     */
+    private fun getAndValidateTrip(id: Long): Optional<Trip> {
+        val result = tripTable.findById(id)
+        if(!result.isPresent)
+            throw ApiException("Trip is not available", HttpStatus.NOT_FOUND)
+        return result;
+    }
 
 
     /**
