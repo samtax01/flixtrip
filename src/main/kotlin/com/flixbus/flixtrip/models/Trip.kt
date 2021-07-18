@@ -11,8 +11,8 @@ data class Trip(
         val fromCity: String = "",
         val toCity: String = "",
         val startAt: Date? = null,
-        val totalSpot: Int = 0,
-        val availableSpot: Int = 0,
+        val totalSpots: Int = 0,
+        val availableSpots: Int = 0,
         val createdAt: Date? = null,
 
         @OneToMany(

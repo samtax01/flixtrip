@@ -19,7 +19,7 @@ class ReservationController(val reservationRepository: ReservationRepository) {
 
 
     // Update reservation
-    @PatchMapping(path = ["{id}"])
+    @PutMapping(path = ["{id}"])
     fun updateReservedSpot(@PathVariable id:Long, @RequestBody request: ReservationRequest): ResponseEntity<ApiResponse> =
         ApiResponse.create(reservationRepository.update(request, id), true, "Updated successfully", HttpStatus.ACCEPTED)
 

@@ -9,25 +9,31 @@ class Seeder {
 
 
     companion object{
+
+        /**
+         * Sample Trip Request
+         */
         fun getTripRequest(totalSpot: Int = 10): TripRequest{
             return TripRequest(
                 fromCity = "Berlin",
                 toCity = "Hamburg",
                 startAt = Date.from(Date().toInstant().plus(5, ChronoUnit.DAYS)),
-                totalSpot = totalSpot,
-                availableSpot = totalSpot,
+                totalSpots = totalSpot,
+                availableSpots = totalSpot,
             );
         }
 
 
+        /**
+         * Sample Reservation Request
+         */
         fun getReservationRequest(tripId: Long, totalSpot: Int = 2): ReservationRequest{
             return ReservationRequest(
                 tripId = tripId,
-                totalSpot = totalSpot,
+                totalSpots = totalSpot,
                 customerName = "Samson Oyetola",
             )
         }
-
 
     }
 }

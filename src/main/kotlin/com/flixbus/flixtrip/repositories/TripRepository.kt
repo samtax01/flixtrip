@@ -2,21 +2,14 @@ package com.flixbus.flixtrip.repositories
 
 
 import com.flixbus.flixtrip.helpers.ApiException
-import com.flixbus.flixtrip.models.Reservation
 import com.flixbus.flixtrip.models.Trip
-import com.flixbus.flixtrip.models.requests.ReservationRequest
 import com.flixbus.flixtrip.models.requests.TripRequest
 import com.flixbus.flixtrip.repositories.interfaces.IReservationRepository
 import com.flixbus.flixtrip.repositories.interfaces.ITripRepository
-import org.hibernate.StaleObjectStateException
 import org.springframework.http.HttpStatus
-import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Repository
 import org.springframework.util.ObjectUtils
 import java.util.*
-import javax.persistence.OptimisticLockException
-import javax.persistence.TypedQuery
-import javax.transaction.Transactional
 
 @Repository
 class TripRepository(val reservationTable: IReservationRepository, val tripTable: ITripRepository) {
@@ -66,8 +59,8 @@ class TripRepository(val reservationTable: IReservationRepository, val tripTable
             fromCity = tripRequest.fromCity,
             toCity = tripRequest.toCity,
             startAt = tripRequest.startAt,
-            totalSpot = tripRequest.availableSpot,
-            availableSpot = tripRequest.availableSpot,
+            totalSpots = tripRequest.availableSpots,
+            availableSpots = tripRequest.availableSpots,
         )
 
         // Save

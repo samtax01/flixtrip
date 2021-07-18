@@ -6,7 +6,7 @@ data class TripRequest(
         var fromCity: String,
         var toCity: String,
         var startAt: Date,
-        var totalSpot: Int,
-        var availableSpot: Int
+        var totalSpots: Int,
+        var availableSpots: Int
     )
 

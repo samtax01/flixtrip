@@ -40,7 +40,7 @@ class TripController(val tripRepository: TripRepository) {
 
 
     // Admin: Update trip
-    @PatchMapping(path = ["admin/trips/{id}"])
+    @PutMapping(path = ["admin/trips/{id}"])
     fun updateTrip(@PathVariable id:Long, @RequestBody request: TripRequest): ResponseEntity<ApiResponse> =
         ApiResponse.create(tripRepository.adminUpdateOrCreateTrip(request, id), true, "Updated successfully", HttpStatus.ACCEPTED)
 

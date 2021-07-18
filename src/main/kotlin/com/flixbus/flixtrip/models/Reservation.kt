@@ -9,7 +9,7 @@ data class Reservation(
         val id: Long = 0,
 
         val tripId: Long = 0,
-        val totalSpot: Int = 0,
+        val totalSpots: Int = 0,
         val customerName: String = "",
         val createdAt: Date? = null
     )

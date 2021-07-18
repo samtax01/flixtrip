@@ -84,12 +84,12 @@ internal class TripRepositoryTest {
         val request = Seeder.getTripRequest(availableSpots);
         val trip = this.tripRepository.adminUpdateOrCreateTrip(request);
         assertNotNull(trip)
-        request.availableSpot = newAvailableSpots;
+        request.availableSpots = newAvailableSpots;
         val updatedTrip = this.tripRepository.adminUpdateOrCreateTrip(request, trip.id);
 
         // Assert
         assertNotNull(updatedTrip)
-        assertEquals(newAvailableSpots, updatedTrip.availableSpot)
+        assertEquals(newAvailableSpots, updatedTrip.availableSpots)
     }
 
 

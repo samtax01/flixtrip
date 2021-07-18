@@ -45,10 +45,10 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
 
         // Validate request
         validateRequest(request)
-        validateAvailability(trip.get().availableSpot, request.totalSpot)
+        validateAvailability(trip.get().availableSpots, request.totalSpots)
 
         // Remove from Trip Availability
-        updateTripAvailableSpot(trip, request.totalSpot, TripAvailability.Remove)
+        updateTripAvailableSpot(trip, request.totalSpots, TripAvailability.Remove)
 
         // Save Changes
         return saveReservation(request, 0);
@@ -74,17 +74,17 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
         val oldReservation = get(id)
 
         // Calculate differences in current and previous reservation
-        if(newReservation.totalSpot > oldReservation.totalSpot){
+        if(newReservation.totalSpots > oldReservation.totalSpots){
             // Validate new request additional spot
-            val additionalSpot = (newReservation.totalSpot - oldReservation.totalSpot)
+            val additionalSpot = (newReservation.totalSpots - oldReservation.totalSpots)
 
             // Remove from Trip Availability
-            validateAvailability(trip.get().availableSpot, additionalSpot);
+            validateAvailability(trip.get().availableSpots, additionalSpot);
             updateTripAvailableSpot(trip, additionalSpot, TripAvailability.Remove)
 
-        }else if(newReservation.totalSpot < oldReservation.totalSpot){
+        }else if(newReservation.totalSpots < oldReservation.totalSpots){
             // Restore Trip Availability
-            val leftOverSpot = (oldReservation.totalSpot - newReservation.totalSpot)
+            val leftOverSpot = (oldReservation.totalSpots - newReservation.totalSpots)
             updateTripAvailableSpot(trip, leftOverSpot, TripAvailability.Add)
         }
 
@@ -106,7 +106,7 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
         // Restore Trip Availability
         updateTripAvailableSpot(
                 tripTable.findById(reservation.tripId),
-                reservation.totalSpot,
+                reservation.totalSpots,
                 TripAvailability.Add
         )
 
@@ -127,11 +127,11 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
         when (tripAvailabilityAction){
             // Add to spot
             TripAvailability.Add ->
-                tripTable.save(trip.get().copy(availableSpot = (trip.get().availableSpot + spot)))
+                tripTable.save(trip.get().copy(availableSpots = (trip.get().availableSpots + spot)))
 
             // Remove from spot
             TripAvailability.Remove ->
-                tripTable.save(trip.get().copy(availableSpot = (trip.get().availableSpot - spot)))
+                tripTable.save(trip.get().copy(availableSpots = (trip.get().availableSpots - spot)))
         }
     }
 
@@ -143,7 +143,7 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
         return reservationTable.save(Reservation(
                 id = id,
                 tripId = reservationRequest.tripId,
-                totalSpot = reservationRequest.totalSpot,
+                totalSpots = reservationRequest.totalSpots,
                 customerName = reservationRequest.customerName,
                 createdAt = Date()
             )
@@ -159,7 +159,7 @@ class ReservationRepository(val reservationTable: IReservationRepository, val tr
         var errorMessage = "";
         if(ObjectUtils.isEmpty(request))
             errorMessage = "Request cannot be empty"
-        else if(request.totalSpot <= 0)
+        else if(request.totalSpots <= 0)
             errorMessage = "Spot value must be greater than 0"
         if(errorMessage.isNotEmpty())
             throw ApiException(errorMessage, HttpStatus.UNPROCESSABLE_ENTITY)

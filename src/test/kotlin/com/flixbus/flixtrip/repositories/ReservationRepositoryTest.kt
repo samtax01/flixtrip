@@ -2,7 +2,6 @@ package com.flixbus.flixtrip.repositories
 
 import com.flixbus.flixtrip.Seeder
 import com.flixbus.flixtrip.helpers.ApiException
-import com.flixbus.flixtrip.helpers.ApiResponse
 import com.flixbus.flixtrip.repositories.interfaces.IReservationRepository
 import com.flixbus.flixtrip.repositories.interfaces.ITripRepository
 import org.junit.jupiter.api.Assertions.*
@@ -68,7 +67,7 @@ internal class ReservationRepositoryTest {
         assertNotNull(trip)
         assertNotNull(reservation)
         assertEquals(trip.id, reservation.tripId)
-        assertEquals(bookedSpots, reservation.totalSpot)
+        assertEquals(bookedSpots, reservation.totalSpots)
     }
 
 
@@ -120,7 +119,7 @@ internal class ReservationRepositoryTest {
         val trip = this.tripRepository.adminUpdateOrCreateTrip(Seeder.getTripRequest(availableSpots));
         val request = Seeder.getReservationRequest(trip.id, bookedSpots);
         val exception1 = assertThrows<ApiException>{
-            request.totalSpot = 0
+            request.totalSpots = 0
             this.reservationRepository.create(request);
         }
 
@@ -145,7 +144,7 @@ internal class ReservationRepositoryTest {
         // Assert
         assertNotNull(trip)
         assertNotNull(reservation)
-        assertEquals((availableSpots - bookedSpots), reducedTrip.availableSpot)
+        assertEquals((availableSpots - bookedSpots), reducedTrip.availableSpots)
     }
 
 
@@ -170,7 +169,7 @@ internal class ReservationRepositoryTest {
         // Assert
         assertNotNull(trip)
         assertNotNull(reservation)
-        assertEquals(expectedAvailableSpots, reducedTrip.availableSpot)
+        assertEquals(expectedAvailableSpots, reducedTrip.availableSpots)
     }
 
     @Test
@@ -194,7 +193,7 @@ internal class ReservationRepositoryTest {
         // Assert
         assertNotNull(trip)
         assertNotNull(reservation)
-        assertEquals(expectedAvailableSpots, reducedTrip.availableSpot)
+        assertEquals(expectedAvailableSpots, reducedTrip.availableSpots)
     }
 
 
@@ -209,11 +208,11 @@ internal class ReservationRepositoryTest {
 
         // Assert total booked
         val reservation = this.reservationRepository.create(Seeder.getReservationRequest(trip.id, bookedSpots));
-        assertEquals(2, reservation.totalSpot)
+        assertEquals(2, reservation.totalSpots)
 
         // Assert reduced
         val reducedTrip = this.tripRepository.adminGetTrip(trip.id);
-        assertEquals(8, reducedTrip.availableSpot)
+        assertEquals(8, reducedTrip.availableSpots)
 
         // Delete value
         this.reservationRepository.delete(reservation.id);
@@ -223,7 +222,7 @@ internal class ReservationRepositoryTest {
         // Assert
         assertNotNull(trip)
         assertNotNull(reservation)
-        assertEquals(trip.totalSpot, increasedTrip.availableSpot)
+        assertEquals(trip.totalSpots, increasedTrip.availableSpots)
     }
 
 
