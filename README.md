@@ -16,8 +16,8 @@ Create Trip
     "fromCity": "Berlin",
     "toCity": "Hamburg",
     "startAt": "2021-07-17",
-    "totalSpot": 15,
-    "availableSpot": 15
+    "totalSpots": 15,
+    "availableSpots": 15
 }
 ```
 
@@ -26,7 +26,7 @@ Create Reservation with the tripId.
 ```json
 {
     "tripId": 1,
-    "totalSpot": 3,
+    "totalSpots": 3,
     "customerName": "Samson Oyetola"
 }
 ```
